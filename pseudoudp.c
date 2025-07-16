@@ -1,6 +1,7 @@
 /*
  * 自前で疑似UDPパケットを生成して送信する。
  * なおlibpcapで送信するのでそれなりの権限が必要。
+ * Copyright (c) 2025 nuel-ch
  */
 
 #include <pcap/pcap.h>
@@ -16,12 +17,14 @@
 #define SRC_IP  "192.168.100.32"
 #define SRC_PORT 12345
 #define SRC_MAC {0x00,0x0c,0x29,0xea,0x68,0x96}
+//#define SRC_MAC {0x00,0x00,0x00,0x00,0x00,0x00}
 
 // 宛先IPアドレス、宛先ポート、宛先MACアドレス
 // GWを越える通信のときはGWのMACアドレスを宛先MACアドレスに設定する
 #define DEST_IP "192.168.100.135"
 #define DEST_PORT 44444
 #define DEST_MAC {0x00,0x0c,0x29,0x81,0x4d,0xe9}
+//#define DEST_MAC {0xff,0xff,0xff,0xff,0xff,0xff}
 
 
 #pragma pack(1) //構造体をパディングなしできっちりパッキング
@@ -173,6 +176,12 @@ uint32_t main(uint32_t argc, char *argv[]){
 	if(cap==NULL){
 		printf("pcap_create() %s\n", pcap_errbuf);
 	}
+
+/*
+	//透過モードON
+	result=pcap_set_promisc(cap, 1);
+	printf("pcap_set_promisc() %d\n", result);
+*/
 
 	//fdを有効化
 	result=pcap_activate(cap);
